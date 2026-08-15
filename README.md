@@ -2,7 +2,7 @@
 ## Fundamentos para Econometría · GEM / Beps Smart Research
 
 **Curso práctico intensivo:** 10 horas · 5 sesiones de 2 horas  
-**Docente:** Mg. Miguel Jesús Armando Paredes Trujillo  
+**Docente:** Mtro. Miguel Jesús Armando Paredes Trujillo  
 Maestro en Ciencias Económicas y Economía Aplicada · Econometrista · Científico de Datos · Investigador Senior
 
 Este repositorio reúne el **manual del estudiante, bases de práctica y scripts de trabajo** del curso. El objetivo es que cada participante disponga de una única fuente oficial y actualizada del material, sin depender del envío individual de archivos.
