@@ -1,0 +1,208 @@
+# ==============================================================================
+# SESIÓN 4 · PREPARAR VARIABLES PARA ECONOMETRÍA
+# Logaritmos, dummies, cuadrados, factores, interacciones, panel, rezagos y fórmulas.
+# ==============================================================================
+
+library(tidyverse)
+
+# ------------------------------------------------------------------------------
+# 0. BASE DE TRABAJO LIMPIA
+# ------------------------------------------------------------------------------
+empleo <- read_csv("datos/empleo_peru_bruto.csv", show_col_types = FALSE)
+
+base <- empleo |>
+  distinct(id_persona, .keep_all = TRUE) |>
+  mutate(
+    region = str_to_title(str_trim(region)),
+    edad = if_else(edad >= 18 & edad <= 80, edad, NA_real_),
+    ingreso_mensual = if_else(
+      is.na(ingreso_mensual) | ingreso_mensual <= 0,
+      NA_real_,
+      ingreso_mensual
+    )
+  )
+
+# ------------------------------------------------------------------------------
+# 1. TRANSFORMAR UNA VARIABLE REQUIERE UNA RAZÓN
+# ------------------------------------------------------------------------------
+# Primero inspecciona la variable original.
+summary(base$ingreso_mensual)
+
+# Nunca transformes de forma automática sin saber qué problema o interpretación buscas.
+
+# ------------------------------------------------------------------------------
+# 2. LOGARITMOS
+# ------------------------------------------------------------------------------
+# log() solo es directamente utilizable con valores positivos.
+base |>
+  summarise(
+    minimo_ingreso = min(ingreso_mensual, na.rm = TRUE),
+    no_positivos = sum(ingreso_mensual <= 0, na.rm = TRUE)
+  )
+
+base <- base |>
+  mutate(
+    ln_ingreso = log(ingreso_mensual)
+  )
+
+summary(base$ln_ingreso)
+
+# Compara gráficamente escalas.
+ggplot(base, aes(x = ingreso_mensual)) + geom_histogram(bins = 20)
+ggplot(base, aes(x = ln_ingreso)) + geom_histogram(bins = 20)
+
+# ------------------------------------------------------------------------------
+# 3. VARIABLES DUMMY
+# ------------------------------------------------------------------------------
+# Una dummy toma típicamente 1 si se cumple una condición y 0 si no.
+base <- base |>
+  mutate(
+    mujer = if_else(sexo == "Mujer", 1, 0),
+    formal_dummy = if_else(formal == "Si", 1, 0),
+    educacion_alta = if_else(educacion_anios >= 16, 1, 0)
+  )
+
+# Comprueba la codificación.
+table(base$sexo, base$mujer)
+table(base$formal, base$formal_dummy)
+
+# ------------------------------------------------------------------------------
+# 4. TÉRMINOS CUADRÁTICOS
+# ------------------------------------------------------------------------------
+# Se utilizan cuando una relación puede ser no lineal.
+base <- base |>
+  mutate(
+    experiencia2 = experiencia_anios^2
+  )
+
+base |>
+  select(experiencia_anios, experiencia2) |>
+  head()
+
+# ------------------------------------------------------------------------------
+# 5. FACTORES Y CATEGORÍA DE REFERENCIA
+# ------------------------------------------------------------------------------
+base <- base |>
+  mutate(
+    sexo_factor = factor(sexo),
+    formal_factor = factor(formal),
+    sector_factor = factor(sector)
+  )
+
+levels(base$sexo_factor)
+levels(base$formal_factor)
+levels(base$sector_factor)
+
+# Elegimos explícitamente una categoría de referencia.
+base$sexo_factor <- relevel(base$sexo_factor, ref = "Hombre")
+base$formal_factor <- relevel(base$formal_factor, ref = "No")
+
+levels(base$sexo_factor)
+levels(base$formal_factor)
+
+# ------------------------------------------------------------------------------
+# 6. INTERACCIONES: CUANDO UNA RELACIÓN DEPENDE DE OTRA VARIABLE
+# ------------------------------------------------------------------------------
+# Creamos una interacción explícita como variable para observar su lógica.
+base <- base |>
+  mutate(
+    educacion_mujer = educacion_anios * mujer
+  )
+
+base |>
+  select(educacion_anios, mujer, educacion_mujer) |>
+  head(10)
+
+# En una fórmula de modelo, x * z incluye x, z y la interacción x:z.
+formula_interaccion <- ln_ingreso ~ educacion_anios * sexo_factor
+formula_interaccion
+
+# ------------------------------------------------------------------------------
+# 7. ¿QUÉ ES UNA BASE DE PANEL?
+# ------------------------------------------------------------------------------
+panel <- read_csv(
+  "datos/panel_regional_2022_2025.csv",
+  show_col_types = FALSE
+)
+
+head(panel)
+dim(panel)
+
+# En este panel una fila se identifica por region + anio.
+panel |>
+  count(region, anio) |>
+  filter(n > 1)
+
+# ¿Cuántos periodos tiene cada región?
+panel |>
+  count(region, name = "periodos") |>
+  arrange(periodos)
+
+# ------------------------------------------------------------------------------
+# 8. ORDEN, REZAGOS Y DIFERENCIAS
+# ------------------------------------------------------------------------------
+# Un rezago solo tiene sentido si el panel está correctamente ordenado.
+panel_transformado <- panel |>
+  arrange(region, anio) |>
+  group_by(region) |>
+  mutate(
+    inversion_lag1 = lag(inversion_publica_pc),
+    pobreza_lag1 = lag(pobreza_pct),
+    delta_pobreza = pobreza_pct - lag(pobreza_pct),
+    delta_ingreso = ingreso_pc - lag(ingreso_pc)
+  ) |>
+  ungroup()
+
+panel_transformado |>
+  filter(region == "Lima") |>
+  select(
+    region, anio, pobreza_pct, pobreza_lag1, delta_pobreza,
+    ingreso_pc, delta_ingreso
+  )
+
+# Observa: el primer periodo de cada región tiene NA en el rezago.
+
+# ------------------------------------------------------------------------------
+# 9. FÓRMULAS DE MODELO EN R
+# ------------------------------------------------------------------------------
+# La sintaxis y ~ x se lee: modelar y como función de x.
+f1 <- ln_ingreso ~ educacion_anios
+f2 <- ln_ingreso ~ educacion_anios + experiencia_anios
+f3 <- ln_ingreso ~ educacion_anios + experiencia_anios + experiencia2 + sexo_factor
+f4 <- ln_ingreso ~ educacion_anios * sexo_factor
+
+f1
+f2
+f3
+f4
+
+# I() permite introducir una operación aritmética dentro de la fórmula.
+f5 <- ln_ingreso ~ educacion_anios + experiencia_anios + I(experiencia_anios^2)
+f5
+
+# ------------------------------------------------------------------------------
+# 10. EJERCICIOS DE LA SESIÓN 4
+# ------------------------------------------------------------------------------
+# EJERCICIO A
+# En base crea:
+# - ln_ingreso,
+# - experiencia2,
+# - mujer,
+# - formal_dummy.
+# Comprueba su estructura con select() + head().
+
+# EJERCICIO B
+# En panel_transformado comprueba que el primer año de cada región tenga NA en lag().
+
+# EJERCICIO C
+# Escribe una fórmula con ln_ingreso como dependiente y como explicativas:
+# educacion_anios, experiencia_anios, experiencia2, sexo_factor y formal_factor.
+
+# RETO
+# Explica en un comentario por qué calcular lag(inversion_publica_pc) sin agrupar por region
+# podría mezclar el último año de una región con el primer año de la siguiente.
+
+# Escribe tus respuestas debajo:
+
+
+# FIN SESIÓN 4
