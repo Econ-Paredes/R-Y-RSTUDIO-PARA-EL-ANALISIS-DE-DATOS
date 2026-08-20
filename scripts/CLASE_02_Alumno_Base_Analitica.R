@@ -1,19 +1,70 @@
 # ==============================================================================
-# SESIÓN 2 · DE ARCHIVO BRUTO A BASE ANALÍTICA
-# Importación, auditoría, identificadores, texto, pipe, dplyr y limpieza.
+# R Y RSTUDIO PARA EL ANÁLISIS DE DATOS
+# CLASE_02 · SCRIPT PRÁCTICO DEL ALUMNO
+# DE ARCHIVO BRUTO A BASE ANALÍTICA · Importación, auditoría y limpieza
+# GEM / Beps Smart Research
+# ==============================================================================
+# Este script acompaña la parte teórica del Manual Práctico del curso.
+# Ejecuta los bloques en orden. Los comentarios identifican cada etapa y
+# aclaran únicamente lo necesario para ejecutar y comprender el código.
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# 0. PREPARAR LA SESIÓN
+# 0. CARPETA DE TRABAJO DE ESTA CLASE
 # ------------------------------------------------------------------------------
+# Antes de cambiar cualquier ruta, revisa dónde está trabajando R.
+getwd()
+
+# En esta clase se trabajará desde una carpeta específica de la sesión.
+# En Windows, dentro de R usa / en la ruta para evitar problemas con \.
+ruta_clase <- "D:/MIGUEL PAREDES  M.2/Desktop/DOCENCIA/RSTUDIO/RY-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS/RECURSOS PARA EL ALUMNO/CLASE_02"
+
+# IMPORTANTE PARA EL ALUMNO:
+# Si guardaste el curso en otra ubicación, modifica SOLO la línea anterior.
+# No cambies todas las rutas del script una por una.
+
+# Comprueba que la carpeta exista antes de direccionar el trabajo.
+dir.exists(ruta_clase)
+
+if (!dir.exists(ruta_clase)) {
+  stop(
+    paste0(
+      "No se encontró la carpeta de trabajo: ", ruta_clase,
+      "\nModifica el objeto ruta_clase con la ubicación real en tu computadora."
+    )
+  )
+}
+
+# setwd() fija el directorio de trabajo para esta sesión.
+setwd(ruta_clase)
+
+# Comprueba que R quedó exactamente en la carpeta de la clase.
+getwd()
+list.files()
+
+# En cada CLASE_XX conservamos los archivos de datos dentro de datos/.
+# De este modo, el resto del script utiliza rutas relativas y legibles.
+if (!dir.exists("datos")) {
+  stop("No existe la subcarpeta 'datos' dentro de la carpeta de esta clase.")
+}
+list.files("datos")
+
+# Secuencia de trabajo con el directorio:
+# 1) revisar getwd(); 2) definir la carpeta; 3) usar setwd();
+# 4) comprobar; 5) desde allí trabajar con rutas relativas.
+# En proyectos más grandes, un archivo .Rproj permite automatizar esta lógica.
+
+# ------------------------------------------------------------------------------
+# 0.1 PAQUETES DE LA CLASE
+# ------------------------------------------------------------------------------
+# Instalar no es lo mismo que cargar. Si ya están instalados, solo library().
+paquetes <- c("tidyverse", "readxl", "haven")
+faltantes <- paquetes[!paquetes %in% rownames(installed.packages())]
+if (length(faltantes) > 0) install.packages(faltantes)
+
 library(tidyverse)
 library(readxl)
 library(haven)
-
-# Comprobación: estas rutas deben existir si abriste el RStudio Project.
-file.exists("datos/empleo_peru_bruto.csv")
-file.exists("datos/empleo_peru_bruto.xlsx")
-file.exists("datos/empleo_peru_bruto.dta")
 
 # ------------------------------------------------------------------------------
 # 1. IMPORTAR NO ES "ABRIR": ES CREAR UN OBJETO EN MEMORIA
@@ -75,8 +126,6 @@ sort(unique(empleo$sexo))
 sort(unique(empleo$formal))
 sort(unique(empleo$sector))
 
-# Pregunta de control:
-# ¿Qué representa una fila de empleo? ¿Una persona, hogar, región o empresa?
 
 # ------------------------------------------------------------------------------
 # 5. IDENTIFICADORES Y DUPLICADOS
@@ -93,12 +142,10 @@ empleo |>
   filter(id_persona %in% duplicados_id$id_persona) |>
   arrange(id_persona)
 
-# Regla: un ID repetido solo es problema si debería ser único para la unidad de análisis.
 
 # ------------------------------------------------------------------------------
 # 6. TEXTO INCONSISTENTE Y ESTANDARIZACIÓN
 # ------------------------------------------------------------------------------
-# Observa cómo una misma región puede estar escrita de varias formas.
 sort(unique(empleo$region))
 
 # Ensayo con una variable temporal.
@@ -243,4 +290,4 @@ file.exists("datos_procesados/empleo_limpio.csv")
 # Escribe tus soluciones debajo:
 
 
-# FIN SESIÓN 2
+# FIN CLASE 02

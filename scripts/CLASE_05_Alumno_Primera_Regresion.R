@@ -1,8 +1,63 @@
 # ==============================================================================
-# SESIÓN 5 · DEL DATO BRUTO A UNA PRIMERA REGRESIÓN
-# Pipeline reproducible, lm(), objeto modelo, predicción, diagnóstico y exportación.
+# R Y RSTUDIO PARA EL ANÁLISIS DE DATOS
+# CLASE_05 · SCRIPT PRÁCTICO DEL ALUMNO
+# DEL DATO A UNA PRIMERA REGRESIÓN · Pipeline reproducible y lm()
+# GEM / Beps Smart Research
+# ==============================================================================
+# Este script acompaña la parte teórica del Manual Práctico del curso.
+# Ejecuta los bloques en orden. Los comentarios identifican cada etapa y
+# aclaran únicamente lo necesario para ejecutar y comprender el código.
 # ==============================================================================
 
+# ------------------------------------------------------------------------------
+# 0. CARPETA DE TRABAJO DE ESTA CLASE
+# ------------------------------------------------------------------------------
+# Antes de cambiar cualquier ruta, revisa dónde está trabajando R.
+getwd()
+
+# En esta clase se trabajará desde una carpeta específica de la sesión.
+# En Windows, dentro de R usa / en la ruta para evitar problemas con \.
+ruta_clase <- "D:/MIGUEL PAREDES  M.2/Desktop/DOCENCIA/RSTUDIO/RY-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS/RECURSOS PARA EL ALUMNO/CLASE_05"
+
+# IMPORTANTE PARA EL ALUMNO:
+# Si guardaste el curso en otra ubicación, modifica SOLO la línea anterior.
+# No cambies todas las rutas del script una por una.
+
+# Comprueba que la carpeta exista antes de direccionar el trabajo.
+dir.exists(ruta_clase)
+
+if (!dir.exists(ruta_clase)) {
+  stop(
+    paste0(
+      "No se encontró la carpeta de trabajo: ", ruta_clase,
+      "\nModifica el objeto ruta_clase con la ubicación real en tu computadora."
+    )
+  )
+}
+
+# setwd() fija el directorio de trabajo para esta sesión.
+setwd(ruta_clase)
+
+# Comprueba que R quedó exactamente en la carpeta de la clase.
+getwd()
+list.files()
+
+# En cada CLASE_XX conservamos los archivos de datos dentro de datos/.
+# De este modo, el resto del script utiliza rutas relativas y legibles.
+if (!dir.exists("datos")) {
+  stop("No existe la subcarpeta 'datos' dentro de la carpeta de esta clase.")
+}
+list.files("datos")
+
+# Secuencia de trabajo con el directorio:
+# 1) revisar getwd(); 2) definir la carpeta; 3) usar setwd();
+# 4) comprobar; 5) desde allí trabajar con rutas relativas.
+# En proyectos más grandes, un archivo .Rproj permite automatizar esta lógica.
+
+# ------------------------------------------------------------------------------
+# 0.1 PAQUETE DE LA CLASE
+# ------------------------------------------------------------------------------
+if (!"tidyverse" %in% rownames(installed.packages())) install.packages("tidyverse")
 library(tidyverse)
 
 # ------------------------------------------------------------------------------
@@ -67,7 +122,6 @@ modelo_multiple <- lm(
 
 summary(modelo_multiple)
 
-# Advertencia: que una variable esté incluida en una regresión NO demuestra causalidad.
 
 # ------------------------------------------------------------------------------
 # 4. EL MODELO TAMBIÉN ES UN OBJETO
@@ -167,4 +221,4 @@ stopifnot(file.exists("resultados/coeficientes_modelo.csv"))
 
 cat("\nSesión 5 completada: pipeline, modelo y exportación ejecutados.\n")
 
-# FIN SESIÓN 5
+# FIN CLASE 05

@@ -1,15 +1,78 @@
 # ==============================================================================
-# SESIÓN 3 · CONVERTIR DATOS EN INFORMACIÓN
-# Descriptivos, frecuencias, agrupación, joins, gráficos y correlación.
+# R Y RSTUDIO PARA EL ANÁLISIS DE DATOS
+# CLASE_03 · SCRIPT PRÁCTICO DEL ALUMNO
+# CONVERTIR DATOS EN INFORMACIÓN · Descriptivos, joins, gráficos y correlación
+# GEM / Beps Smart Research
+# ==============================================================================
+# Este script acompaña la parte teórica del Manual Práctico del curso.
+# Ejecuta los bloques en orden. Los comentarios identifican cada etapa y
+# aclaran únicamente lo necesario para ejecutar y comprender el código.
 # ==============================================================================
 
-library(tidyverse)
+# ------------------------------------------------------------------------------
+# 0. CARPETA DE TRABAJO DE ESTA CLASE
+# ------------------------------------------------------------------------------
+# Antes de cambiar cualquier ruta, revisa dónde está trabajando R.
+getwd()
+
+# En esta clase se trabajará desde una carpeta específica de la sesión.
+# En Windows, dentro de R usa / en la ruta para evitar problemas con \.
+ruta_clase <- "D:/MIGUEL PAREDES  M.2/Desktop/DOCENCIA/RSTUDIO/RY-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS/RECURSOS PARA EL ALUMNO/CLASE_03"
+
+# IMPORTANTE PARA EL ALUMNO:
+# Si guardaste el curso en otra ubicación, modifica SOLO la línea anterior.
+# No cambies todas las rutas del script una por una.
+
+# Comprueba que la carpeta exista antes de direccionar el trabajo.
+dir.exists(ruta_clase)
+
+if (!dir.exists(ruta_clase)) {
+  stop(
+    paste0(
+      "No se encontró la carpeta de trabajo: ", ruta_clase,
+      "\nModifica el objeto ruta_clase con la ubicación real en tu computadora."
+    )
+  )
+}
+
+# setwd() fija el directorio de trabajo para esta sesión.
+setwd(ruta_clase)
+
+# Comprueba que R quedó exactamente en la carpeta de la clase.
+getwd()
+list.files()
+
+# En cada CLASE_XX conservamos los archivos de datos dentro de datos/.
+# De este modo, el resto del script utiliza rutas relativas y legibles.
+if (!dir.exists("datos")) {
+  stop("No existe la subcarpeta 'datos' dentro de la carpeta de esta clase.")
+}
+list.files("datos")
+
+# Secuencia de trabajo con el directorio:
+# 1) revisar getwd(); 2) definir la carpeta; 3) usar setwd();
+# 4) comprobar; 5) desde allí trabajar con rutas relativas.
+# En proyectos más grandes, un archivo .Rproj permite automatizar esta lógica.
 
 # ------------------------------------------------------------------------------
-# 0. PREPARAR UNA BASE LIMPIA DE FORMA AUTÓNOMA
+# 0.1 PAQUETE DE LA CLASE
 # ------------------------------------------------------------------------------
-# El script puede ejecutarse aunque no hayas corrido la sesión 2 antes.
-empleo <- read_csv("datos/empleo_peru_bruto.csv", show_col_types = FALSE)
+if (!"tidyverse" %in% rownames(installed.packages())) install.packages("tidyverse")
+library(tidyverse)
+
+
+# ------------------------------------------------------------------------------
+# 0.2 RECONSTRUIR LA BASE ANALÍTICA DE ESTA CLASE
+# ------------------------------------------------------------------------------
+# BUENA PRÁCTICA:
+# Cada script de clase debe poder ejecutarse desde una sesión limpia.
+# Por eso NO dependemos de que el objeto empleo_limpio siga en memoria desde
+# la CLASE_02. Volvemos a partir del archivo bruto y reproducimos las reglas.
+
+empleo <- read_csv(
+  "datos/empleo_peru_bruto.csv",
+  show_col_types = FALSE
+)
 
 empleo_limpio <- empleo |>
   distinct(id_persona, .keep_all = TRUE) |>
@@ -20,8 +83,16 @@ empleo_limpio <- empleo |>
       is.na(ingreso_mensual) | ingreso_mensual <= 0,
       NA_real_,
       ingreso_mensual
-    )
+    ),
+    ingreso_anual = ingreso_mensual * 12,
+    ln_ingreso = log(ingreso_mensual),
+    mujer = if_else(sexo == "Mujer", 1, 0),
+    formal_dummy = if_else(formal == "Si", 1, 0)
   )
+
+# Comprobación rápida antes de iniciar los descriptivos.
+dim(empleo_limpio)
+colSums(is.na(empleo_limpio))
 
 # ------------------------------------------------------------------------------
 # 1. ¿POR QUÉ DESCRIBIR ANTES DE MODELAR?
@@ -203,4 +274,4 @@ write_csv(base_regional, "resultados/base_regional.csv")
 # Escribe tus soluciones debajo:
 
 
-# FIN SESIÓN 3
+# FIN CLASE 03

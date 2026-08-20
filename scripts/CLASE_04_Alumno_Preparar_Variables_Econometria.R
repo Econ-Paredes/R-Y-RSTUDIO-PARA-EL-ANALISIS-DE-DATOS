@@ -1,14 +1,76 @@
 # ==============================================================================
-# SESIÓN 4 · PREPARAR VARIABLES PARA ECONOMETRÍA
-# Logaritmos, dummies, cuadrados, factores, interacciones, panel, rezagos y fórmulas.
+# R Y RSTUDIO PARA EL ANÁLISIS DE DATOS
+# CLASE_04 · SCRIPT PRÁCTICO DEL ALUMNO
+# PREPARAR VARIABLES PARA ECONOMETRÍA · Transformaciones, panel y fórmulas
+# GEM / Beps Smart Research
+# ==============================================================================
+# Este script acompaña la parte teórica del Manual Práctico del curso.
+# Ejecuta los bloques en orden. Los comentarios identifican cada etapa y
+# aclaran únicamente lo necesario para ejecutar y comprender el código.
 # ==============================================================================
 
-library(tidyverse)
+# ------------------------------------------------------------------------------
+# 0. CARPETA DE TRABAJO DE ESTA CLASE
+# ------------------------------------------------------------------------------
+# Antes de cambiar cualquier ruta, revisa dónde está trabajando R.
+getwd()
+
+# En esta clase se trabajará desde una carpeta específica de la sesión.
+# En Windows, dentro de R usa / en la ruta para evitar problemas con \.
+ruta_clase <- "D:/MIGUEL PAREDES  M.2/Desktop/DOCENCIA/RSTUDIO/RY-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS/RECURSOS PARA EL ALUMNO/CLASE_04"
+
+# IMPORTANTE PARA EL ALUMNO:
+# Si guardaste el curso en otra ubicación, modifica SOLO la línea anterior.
+# No cambies todas las rutas del script una por una.
+
+# Comprueba que la carpeta exista antes de direccionar el trabajo.
+dir.exists(ruta_clase)
+
+if (!dir.exists(ruta_clase)) {
+  stop(
+    paste0(
+      "No se encontró la carpeta de trabajo: ", ruta_clase,
+      "\nModifica el objeto ruta_clase con la ubicación real en tu computadora."
+    )
+  )
+}
+
+# setwd() fija el directorio de trabajo para esta sesión.
+setwd(ruta_clase)
+
+# Comprueba que R quedó exactamente en la carpeta de la clase.
+getwd()
+list.files()
+
+# En cada CLASE_XX conservamos los archivos de datos dentro de datos/.
+# De este modo, el resto del script utiliza rutas relativas y legibles.
+if (!dir.exists("datos")) {
+  stop("No existe la subcarpeta 'datos' dentro de la carpeta de esta clase.")
+}
+list.files("datos")
+
+# Secuencia de trabajo con el directorio:
+# 1) revisar getwd(); 2) definir la carpeta; 3) usar setwd();
+# 4) comprobar; 5) desde allí trabajar con rutas relativas.
+# En proyectos más grandes, un archivo .Rproj permite automatizar esta lógica.
 
 # ------------------------------------------------------------------------------
-# 0. BASE DE TRABAJO LIMPIA
+# 0.1 PAQUETE DE LA CLASE
 # ------------------------------------------------------------------------------
-empleo <- read_csv("datos/empleo_peru_bruto.csv", show_col_types = FALSE)
+if (!"tidyverse" %in% rownames(installed.packages())) install.packages("tidyverse")
+library(tidyverse)
+
+
+# ------------------------------------------------------------------------------
+# 0.2 PREPARAR LA BASE DE TRABAJO DE ESTA CLASE
+# ------------------------------------------------------------------------------
+# Esta clase debe funcionar desde una sesión limpia. Reconstruimos
+# una base analítica a partir del archivo bruto antes de transformar variables.
+
+empleo <- read_csv(
+  "datos/empleo_peru_bruto.csv",
+  show_col_types = FALSE
+)
 
 base <- empleo |>
   distinct(id_persona, .keep_all = TRUE) |>
@@ -22,13 +84,16 @@ base <- empleo |>
     )
   )
 
+# Comprobación rápida:
+dim(base)
+summary(base$ingreso_mensual)
+
 # ------------------------------------------------------------------------------
 # 1. TRANSFORMAR UNA VARIABLE REQUIERE UNA RAZÓN
 # ------------------------------------------------------------------------------
 # Primero inspecciona la variable original.
 summary(base$ingreso_mensual)
 
-# Nunca transformes de forma automática sin saber qué problema o interpretación buscas.
 
 # ------------------------------------------------------------------------------
 # 2. LOGARITMOS
@@ -160,7 +225,6 @@ panel_transformado |>
     ingreso_pc, delta_ingreso
   )
 
-# Observa: el primer periodo de cada región tiene NA en el rezago.
 
 # ------------------------------------------------------------------------------
 # 9. FÓRMULAS DE MODELO EN R
@@ -205,4 +269,4 @@ f5
 # Escribe tus respuestas debajo:
 
 
-# FIN SESIÓN 4
+# FIN CLASE 04

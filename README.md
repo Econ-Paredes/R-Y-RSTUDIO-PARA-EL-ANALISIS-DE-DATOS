@@ -3,112 +3,69 @@
 
 **Curso práctico intensivo:** 10 horas · 5 sesiones de 2 horas  
 **Docente:** Mg. Miguel Jesús Armando Paredes Trujillo  
-**Perfil:** Maestro en Ciencias Económicas y Economía Aplicada · Econometrista · Científico de Datos · Investigador Senior
+Maestro en Ciencias Económicas y Economía Aplicada · Econometrista · Científico de Datos · Investigador Senior
 
-Este repositorio es el **espacio oficial de trabajo del curso**. Aquí encontrarás el manual del estudiante, las bases de datos, los scripts prácticos de cada sesión y los recursos necesarios para avanzar en RStudio sin depender del envío individual de archivos.
+Este repositorio reúne el **manual práctico, las bases de trabajo y los scripts del alumno por clase**. La finalidad es que cada participante disponga de una fuente única y ordenada para reproducir en RStudio cada ejercicio desarrollado durante el curso.
 
-## 1. Empieza aquí
+## Inicio rápido
 
-### Opción recomendada · Descargar todo el curso
-1. Pulsa el botón **Code**.
-2. Selecciona **Download ZIP**.
-3. Descomprime la carpeta en una ubicación sencilla de tu computadora.
-4. Abre `R-Y-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS.Rproj` con RStudio.
-5. Antes de iniciar la primera sesión ejecuta `scripts/00_antes_de_iniciar_configuracion.R`.
+1. Pulsa **Code** → **Download ZIP**.
+2. Descomprime el repositorio en una carpeta de trabajo.
+3. Abre `R-Y-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS.Rproj` con RStudio.
+4. Revisa el manual en `material/Manual_Practico_R_RStudio_Analisis_Datos_GEM.pdf`.
+5. Trabaja los scripts de `scripts/` en orden, desde `CLASE_01` hasta `CLASE_05`.
 
-### Opción con Git
-```bash
-git clone https://github.com/Econ-Paredes/R-Y-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS.git
+## Scripts del alumno
+
+```text
+scripts/
+├── CLASE_01_Alumno_Pensar_en_R.R
+├── CLASE_02_Alumno_Base_Analitica.R
+├── CLASE_03_Alumno_Datos_en_Informacion.R
+├── CLASE_04_Alumno_Preparar_Variables_Econometria.R
+└── CLASE_05_Alumno_Primera_Regresion.R
 ```
 
-> **Buena práctica:** trabaja siempre desde el RStudio Project. Así las rutas del curso se mantienen relativas a la carpeta raíz y el proyecto puede moverse entre computadoras sin reescribir todas las direcciones de archivos.
+Cada script corresponde a una sesión de 2 horas y contiene únicamente **código, comentarios técnicos necesarios y ejercicios del alumno**. Las ideas fuerza, preguntas de control, respuestas esperadas, errores intencionales y orientaciones de conducción pertenecen al material privado del docente y no forman parte de este repositorio.
 
-## 2. Cómo se complementan el manual y los scripts
+## Ruta de aprendizaje
 
-El curso está diseñado con dos recursos que se usan juntos:
+| Clase | Núcleo práctico | Producto esperado |
+|---|---|---|
+| 01 | Entorno, directorio de trabajo, lógica de R, objetos, operadores, funciones, vectores, `NA` y data frames | Primer script reproducible |
+| 02 | Importación, auditoría, limpieza y transformación con `dplyr` | Base analítica depurada |
+| 03 | Estadística descriptiva, agrupación, joins, gráficos y correlación | Indicadores y visualizaciones |
+| 04 | Logaritmos, dummies, términos cuadráticos, factores, panel, rezagos y fórmulas | Variables preparadas para econometría |
+| 05 | Pipeline reproducible e introducción a `lm()` | Primera regresión y proyecto integrador |
 
-- **Manual:** desarrolla definiciones, conceptos, lógica, reglas, buenas prácticas, notas, recomendaciones y ejercicios.
-- **Scripts:** permiten comprobar cada concepto directamente en RStudio mediante código ejecutable, ejemplos y ensayos.
-
-La secuencia recomendada es:
-
-**Leer el concepto → ejecutar el ejemplo → observar el resultado → modificar el código → resolver el ejercicio.**
-
-## 3. Estructura del repositorio
+## Estructura general
 
 ```text
 R-Y-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS/
 ├── README.md
 ├── R-Y-RSTUDIO-PARA-EL-ANALISIS-DE-DATOS.Rproj
 ├── datos/
-│   ├── practica_vectores.csv
-│   ├── empleo_peru_bruto.csv
-│   ├── empleo_peru_bruto.xlsx
-│   ├── empleo_peru_bruto.dta
-│   ├── contexto_regional_2025.csv
-│   ├── contexto_regional_2025.xlsx
-│   └── panel_regional_2022_2025.csv
 ├── material/
 │   └── Manual_Practico_R_RStudio_Analisis_Datos_GEM.pdf
 ├── scripts/
-│   ├── 00_antes_de_iniciar_configuracion.R
-│   ├── 01_sesion_pensar_en_R.R
-│   ├── 02_sesion_archivo_bruto_a_base_analitica.R
-│   ├── 03_sesion_convertir_datos_en_informacion.R
-│   ├── 04_sesion_preparar_variables_para_econometria.R
-│   ├── 05_sesion_del_dato_a_primera_regresion.R
-│   └── README_SCRIPTS_ALUMNO.md
+│   ├── CLASE_01_Alumno_Pensar_en_R.R
+│   ├── CLASE_02_Alumno_Base_Analitica.R
+│   ├── CLASE_03_Alumno_Datos_en_Informacion.R
+│   ├── CLASE_04_Alumno_Preparar_Variables_Econometria.R
+│   └── CLASE_05_Alumno_Primera_Regresion.R
 └── recursos/
-    └── GUIA_GITHUB_ALUMNO.md
 ```
 
-## 4. Ruta de aprendizaje
+## Regla de trabajo
 
-| Sesión | Enfoque | Trabajo práctico en R |
-|---|---|---|
-| Antes de iniciar | Entorno y buenas prácticas | Directorio, RStudio Project, scripts, comentarios, paquetes y ayuda |
-| 1 | **Pensar en R** | Objetos, expresiones, funciones, case sensitive, tipos de datos, vectores, `NA` y `data.frame` |
-| 2 | **Del archivo bruto a la base analítica** | Importación, inspección, auditoría, limpieza y transformación |
-| 3 | **Convertir datos en información** | Descriptivos, agrupación, joins, tablas y gráficos |
-| 4 | **Preparar variables para econometría** | Logs, dummies, términos cuadráticos, estructura de panel, rezagos y diferencias |
-| 5 | **Del dato a una primera regresión** | Pipeline reproducible, fórmulas, `lm()`, coeficientes, valores ajustados y residuos |
+**Verificar ubicación → definir carpeta de la clase → comprobar ruta → establecer directorio → trabajar con rutas relativas → importar → auditar → transformar → analizar → exportar.**
 
-## 5. Paquetes principales
+Las bases originales se conservan sin modificar. Los productos derivados deben poder regenerarse mediante código reproducible.
 
-Instala un paquete una sola vez:
-
-```r
-install.packages(c("tidyverse", "readxl", "haven"))
-```
-
-Cárgalo cada vez que inicies una nueva sesión de R:
-
-```r
-library(tidyverse)
-library(readxl)
-library(haven)
-```
-
-## 6. Regla de trabajo del curso
-
-**Carpeta raíz → RStudio Project → R Script (.R) → paquetes → importación → auditoría/limpieza → análisis → exportación.**
-
-Las bases originales deben conservarse sin modificaciones. Las transformaciones, tablas, gráficos y resultados se generan mediante código reproducible.
-
-## 7. Manual del estudiante
-
-El manual oficial está disponible en:
+## Manual práctico
 
 `material/Manual_Practico_R_RStudio_Analisis_Datos_GEM.pdf`
 
-## 8. Scripts del estudiante
+## Uso académico
 
-Empieza por:
-
-`scripts/00_antes_de_iniciar_configuracion.R`
-
-Luego utiliza el script correspondiente a cada sesión. Los archivos contienen comentarios que explican **qué se está demostrando, qué debes observar y qué debes modificar**.
-
-## 9. Uso académico
-
-Material académico de **GEM / Beps Smart Research** para uso formativo.
+Material académico para uso formativo de **GEM / Beps Smart Research**. No redistribuir comercialmente sin autorización.
